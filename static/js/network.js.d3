@@ -1,0 +1,217 @@
+(function(factory) {
+        "use strict";
+        if (typeof define === 'function' && define.amd) {
+            define(['jquery'], factory);
+        } else if (window.jQuery && !window.jQuery.fn.Network) {
+            factory(window.jQuery);
+        }
+    }
+    (function($) {
+        'use strict';
+
+        var Network = function(container, data, options) {
+            var that = this;
+            this.container = container;
+            this._default_options = {
+                duration: 300
+            };
+            this.options = $.extend({}, this._default_options, options);
+            this.nodes = data.nodes;
+            this.links = data.links;
+
+            var width = container.width();
+            var height = container.height();
+
+            this.svg = d3.select(container[0]).append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g");
+            
+            this.simulation = d3.forceSimulation(this.nodes)
+                .force("charge", d3.forceManyBody())
+                .force("link", d3.forceLink().id(function(d) { return d.id; }))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            this.update();
+
+        }
+
+        Network.prototype = {
+            constructor: Network,
+
+            update: function() {
+
+                var that = this;
+
+                var nodes = this.svg.selectAll("g.node")
+                    .data(this.nodes);
+
+                var links = this.svg.selectAll("path.link")
+                    .data(this.links);
+
+                this.simulation
+                    .nodes(this.nodes)
+                    //.force("link", d3.forceLink(this.links).distance(20).strength(1))
+                    .on("tick", ticked);
+                //this.simulation.force('link').links(this.links);
+
+
+                /* NODES */
+                /* Enter */
+                var nodeEnter = nodes.enter()
+                    .append("g")
+                    .attr("class", "node")
+                    .on("click", function(d) { that.nodeClick(d); })
+                    .on("mouseover", function(d) { that.nodeover(d); })
+                    .on("mouseout", function(d) { that.nodeout(d); })
+                    .call(d3.drag()
+                        .on("start", function(d) { that.dragstarted(d); })
+                        .on("drag", function(d) { that.dragged(d); })
+                        .on("end", function(d) { that.dragended(d); }));
+
+                nodeEnter.append("circle")
+                    .attr("r", 20)
+                    .attr("fill", function(d) {
+                        return "lightsteelblue";
+                    })
+                    .attr('id', function(d) {
+                        return d.id;
+                    });
+
+                nodeEnter.append("text")
+                    .attr("dx", 0)
+                    .attr("dy", ".35em")
+                    .text(function(d) { return d.name; });
+
+
+                ///* Update */
+                //var nodeUpdate = nodes.transition()
+                //    .duration(this.options.duration)
+                //    .attr("r", 8)
+
+
+                /* Exit */
+                var nodeExit = nodes.exit().transition()
+                    .duration(this.options.duration)
+                    .remove();
+
+                nodeExit.select("circle")
+                    .attr("r", 1e-6)
+                    .style("fill-opacity", 1e-6);
+
+
+                /* LINKS */
+                /* Enter */
+                //var linkEnter = links.enter()
+                //    .insert("g", "g")
+                //    //.append("g")
+                //    .attr("class", "linkContainer")
+                //    .attr("id", function(d) {
+                //        return d.from + ':' + d.to;
+                //    });
+                //
+                //linkEnter.append("path")
+                //    .attr("class", "link");
+
+
+                var linkEnter = links.enter()
+                    .append("g")
+                    .append("path")
+                    .attr("class", "link");
+
+                /* Update */
+                //var linkUpdate = links.transition()
+                //    .duration(this.options.duration)
+                //    .attr("d", this.diagonal);
+
+                /* Exit */
+                var linkExit = links.exit().transition()
+                    .duration(this.options.duration)
+                    .remove();
+
+                function ticked() {
+                    //linkEnter.attr("x1", function(d) { return d.from.x; })
+                    //    .attr("y1", function(d) { return d.to.y; })
+                    //    .attr("x2", function(d) { return d.from.x; })
+                    //    .attr("y2", function(d) { return d.to.y; });
+                
+                    //nodeEnter.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+                    var links = that.svg.selectAll(".link");
+                    links.attr("x1", function(d) { return d.from.x; })
+                        .attr("y1", function(d) { return d.to.y; })
+                        .attr("x2", function(d) { return d.from.x; })
+                        .attr("y2", function(d) { return d.to.y; });
+                    var nodes = that.svg.selectAll(".node");
+                    nodes.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                }
+
+
+            },
+
+            add_nodes: function(nodes) {
+                this.nodes = this.nodes.concat(nodes);
+                this.update();
+            },
+
+            add_links: function(links) {
+                this.links = this.links.concat(links);
+                this.update();
+            },
+
+            nodeClick: function(d) {
+                console.log('click', d);
+            },
+
+            nodeover: function(d) {
+            },
+
+            nodeout: function(d) {
+            },
+
+            dragstarted: function(d) {
+                if (!d3.event.active) this.simulation.alphaTarget(.03).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            },
+
+            dragged: function(d) {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            },
+
+            dragended: function(d) {
+                if (!d3.event.active) this.simulation.alphaTarget(.03);
+                d.fx = null;
+                d.fy = null;
+            },
+
+            util: {
+
+            }
+        },
+
+        $.network = Network;
+        $.fn.network = function(data, options) {
+            var pickerArgs = arguments;
+            var network;
+
+            this.each(function() {
+                var $this = $(this),
+                    inst = $this.data('network'),
+                    options = ((typeof option === 'object') ? option : {});
+                if ((!inst) && (typeof option !== 'string')) {
+                    network = new Network($this, data, options);
+                    $this.data('network', network);
+                } else {
+                    if (typeof option === 'string') {
+                        inst[option].apply(inst, Array.prototype.slice.call(pickerArgs, 1));
+                    }
+                }
+            });
+            return network;
+        }
+        $.fn.network.constructor = Network;
+
+    })
+);

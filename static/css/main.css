@@ -1,0 +1,118 @@
+body {
+    width: 100%;
+    height: 100vh;
+}
+
+#network {
+    width: 100%;
+    height: 100%;
+}
+
+.control-panel {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 20;
+    box-shadow: 4px 5px 3px 1px rgba(0,0,0,0.5);
+}
+.control-panel > .card-header {
+    cursor: grabbing;
+}
+
+.key-typeahead {
+    z-index: 25;
+}
+
+.loadingBG {
+    width:100%;
+    height:100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    background-color: #000;
+    opacity: 0.70;
+}
+
+.loading {
+    display: none;
+    text-color: #0088cc;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    bottom: 50%;
+    z-index: 25;
+}
+
+.spinner {
+    height: 60px;
+    width: 60px;
+    margin: 0 auto;
+    position: relative;
+    /*border: 6px solid rgba(0,174,239,.15);*/
+    border: 6px solid rgba(0,174,239,.15);
+    border-radius: 100%;
+    z-index: 35;
+    -webkit-animation: rotation .8s infinite linear;
+    -moz-animation: rotation .8s infinite linear;
+    -o-animation: rotation .8s infinite linear;
+    animation: rotation .8s infinite linear;
+}
+
+.spinner:before {
+    height: 60px;
+    width: 60px;
+    content: "";
+    display: block;
+    position: absolute;
+    left: -6px;
+    top: -6px;
+    /*border-top: 6px solid rgba(0,136,204,.8);*/
+    border-top: 6px solid rgba(255,255,255,.8);
+    border-left: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-radius: 100%;
+    z-index: 35;
+}
+
+.loadingText {
+    color: white;
+    text-shadow: 0 0 2px black;
+    position: relative;
+    top: 5px;
+    left: 0px;
+}
+
+.loadingCustomText {
+    color: white;
+    position: absolute;
+    top: 90px;
+    left: -60px;
+    width: 200px;
+    text-shadow: 0 0 2px black;
+}
+
+@-webkit-keyframes rotation {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(359deg);}
+}
+@-moz-keyframes rotation {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(359deg);}
+}
+@-o-keyframes rotation {
+    from {-o-transform: rotate(0deg);}
+    to {-o-transform: rotate(359deg);}
+}
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}

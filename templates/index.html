@@ -1,0 +1,96 @@
+<!doctype html>
+<meta>
+    <title>PGP Social graph</title>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/jquery-ui.min.css') }}">
+
+    <!-- dataTable -->
+    <link href="{{ url_for('static', filename='css/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dataTables.bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>
+
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/vis.min.css') }}">
+    <script src="{{ url_for('static', filename='js/vis.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3.js') }}"></script>
+    
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/slider.css') }}">
+</meta>
+
+<body>
+    
+    <div class="card control-panel">
+        <div class="card-header">
+            Control panel
+        </div>
+        <div class="card-body">
+            <input type="text" id="key-typeahead" class="key-typeahead form-control" data-provide="typeahead" size="50" placeholder="Search for a key">
+            <label class="switch">
+                <input id="switch_show" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+            <span class="switch-label">Shows full label</span>
+        </div>
+    </div>
+
+    <div id="modal-add-root" class="modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search for a key</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="modal-key-typeahead" class="key-typeahead form-control" data-provide="typeahead" size="50" placeholder="Search for a key" autofocus>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="modal-btn-loadall" class="btn btn-warning">Load all</button>
+                    <button id="modal-btn-search" type="button" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-table-info" class="modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Results</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="table-choose" class="display" style="width:100%"></table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='network' data-rootid="{{rootid}}"></div>
+
+    <div class="loadingBG" style="display: none;"></div>
+    <div class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <div class="loadingText">Loading</div>
+        <div class="loadingCustomText"></div>
+    </div>
+
+</body>
+
+<script src="{{ url_for('static', filename='js/options.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/network.js') }}"></script>
